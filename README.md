@@ -28,6 +28,7 @@ app.use('/graphlite', expressGraphlite({
 }));
 ```
 After that, simply call the express server on the ```/graphlite``` url using the ```POST``` method with the following options:
+
 | Name | Type | Required | Description |
 | ---- | ---- | -------- | ----------- |
 | queryName | String | true | The name of the query which will run in the database
