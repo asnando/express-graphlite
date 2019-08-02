@@ -7,12 +7,14 @@ const createGraphliteInstance = ({
   queries,
   associations,
   connection,
+  locales,
 }) => {
   return new Graphlite({
     schemas,
     queries,
     associations,
     connection,
+    locales,
   });
 };
 
@@ -28,10 +30,12 @@ const expressGraphliteMiddleware = (req, res) => {
   const {
     queryName,
     type,
+    locale,
   } = payload;
 
   const options = {
     ...payload,
+    locale,
   };
 
   delete options.queryName;
@@ -49,7 +53,7 @@ const expressGraphliteMiddleware = (req, res) => {
       .then(data => res.json(data))
       .catch(err => res.json({
         error: 1,
-        message: err,
+        message: err.toString(),
       }));
   } catch (exception) {
     return res.json({
