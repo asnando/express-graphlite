@@ -8,6 +8,7 @@ const createGraphliteInstance = ({
   associations,
   connection,
   locales,
+  debug,
 }) => {
   return new Graphlite({
     schemas,
@@ -15,6 +16,7 @@ const createGraphliteInstance = ({
     associations,
     connection,
     locales,
+    debug,
   });
 };
 
