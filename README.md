@@ -38,12 +38,8 @@ app.use('/graphlite', expressGraphlite({
 | connection | Object, Function | Object or function which Graphlite uses to run the query on database.
 | debug | Boolean | If must or must not enable the Graphlite builtin debugger. |
 
-After that, simply call the express server on the ```/graphlite``` url using the ```POST``` method with the following options:
+After that, simply call the express server using the ```GET``` and the ```/graphlite/(findAll|findOne)/queryName``` url format.
 
-| Name | Type | Required | Description |
-| ---- | ---- | -------- | ----------- |
-| queryName | String | true | The name of the query which will run in the database
-| type | String | false | Use ```findAll``` or ```findOne``` to fetch a list or just one row
-| size | Number | false | Number of rows to return
-| page | Number | false | Offset page number
-| orderBy | String / Array | false | String or array of strings to use as orderBy
+The query options must be defined as json object and requested as ```application/json```.
+
+See [Graphlite](https://github.com/ffrm/graphlite.git) options reference  for further information about specific filters keywords.

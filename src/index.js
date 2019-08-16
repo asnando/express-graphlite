@@ -1,5 +1,7 @@
 const Graphlite = require('graphlite');
 
+const defaultFindType = 'findAll';
+
 let graphliteInstance;
 
 const createGraphliteInstance = ({
@@ -9,59 +11,57 @@ const createGraphliteInstance = ({
   connection,
   locales,
   debug,
-}) => {
-  return new Graphlite({
-    schemas,
-    queries,
-    associations,
-    connection,
-    locales,
-    debug,
-  });
-};
+}) => new Graphlite({
+  schemas,
+  queries,
+  associations,
+  connection,
+  locales,
+  debug,
+});
+
+const returnError = (res, message) => res.json({ error: 1, message });
 
 const expressGraphliteMiddleware = (req, res) => {
-  if (req.method !== 'POST') {
-    return res.json({
-      error: 1,
-      message: 'Make Graphlite requests using POST method!',
-    });
+  const {
+    url,
+    method,
+    body: payload,
+  } = req;
+
+  if (method !== 'GET') {
+    return returnError(res, 'Make Graphlite requests using GET method');
   }
 
-  const { body: payload } = req;
-  const {
-    queryName,
-    type,
-    locale,
-  } = payload;
+  let findType;
+  let queryName;
 
-  const options = {
-    ...payload,
-    locale,
-  };
-
-  delete options.queryName;
-  delete options.type;
+  if (/^\/\w+\/[\w\-]+$/.test(url)) {
+    // /findType/queryName
+    const chunks = url.split('/').filter(e => !!e);
+    findType = chunks.shift();
+    queryName = chunks.shift();
+  } else if (/^\/\w+$/.test(url)) {
+    // /queryName
+    const chunks = url.split('/').filter(e => !!e);
+    findType = defaultFindType;
+    queryName = chunks.shift();
+  } else {
+    return returnError(res, 'Check your url specification');
+  }
 
   if (!queryName) {
-    return res.json({
-      error: 1,
-      message: 'Missing queryName param',
-    });
+    return returnError(res, 'Missing query name');
   }
 
+  const queryOptions = payload;
+
   try {
-    return graphliteInstance[type || 'findAll'](queryName, options)
+    return graphliteInstance[findType](queryName, queryOptions)
       .then(data => res.json(data))
-      .catch(err => res.json({
-        error: 1,
-        message: err.toString(),
-      }));
+      .catch(err => returnError(res, err.toString()));
   } catch (exception) {
-    return res.json({
-      error: 1,
-      message: exception.toString(),
-    });
+    return returnError(res, exception.toString());
   }
 };
 
