@@ -1,12 +1,12 @@
 # Express Graphlite
-Express Graphlite middleware
+Graphlite middleware for express.
 
-# Installation
+## Installation
 ```bash
 yarn add express-graphlite
 ```
 
-# Usage
+## Usage
 ```javascript
 // ...
 const app = express();
@@ -25,8 +25,19 @@ app.use('/graphlite', expressGraphlite({
   queries,
   associations,
   connection: storage,
+  debug: true,
 }));
 ```
+
+## Options
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| schemas | Array | Array of Graphlite schemas |
+| queries | Array | Array of Graphlite queries |
+| associations | Function | Function to associated all schemas between them |
+| connection | Object, Function | Object or function which Graphlite uses to run the query on database.
+| debug | Boolean | If must or must not enable the Graphlite builtin debugger. |
+
 After that, simply call the express server on the ```/graphlite``` url using the ```POST``` method with the following options:
 
 | Name | Type | Required | Description |
